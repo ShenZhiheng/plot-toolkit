@@ -6,7 +6,8 @@ import math
 
 t_ie,X_ie,Y_ie,Z_ie=[],[],[],[]
 t_m,X_m,Y_m,Z_m=[],[],[],[]
-a=0;
+a,count=0,0
+RMS=0.0
 Vx_ie,Vy_ie,Vz_ie,Vx_m,Vy_m,Vz_m=[],[],[],[],[],[]
 Pitch_ie,Roll_ie,Yaw_ie,Pitch_m,Roll_m,Yaw_m=[],[],[],[],[],[]
 bgx,bgy,bgz,bax,bay,baz=[],[],[],[],[],[]
@@ -15,24 +16,35 @@ t,X_err,Y_err,Z_err,VX_err,VY_err,VZ_err,SUMXYZ=[],[],[],[],[],[],[],[]
 Pitch_err,Roll_err,Yaw_err=[],[],[]
 X_sum,Y_sum,Z_sum,VX_sum,VY_sum,VZ_sum,Pitch_sum,Roll_sum,Yaw_sum=0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
 
-with open('FSAS20150722/FSAS20150722.trj','rt') as f:
+path = 'FSAS20190917/3'
+
+with open(path+'/TC-combined-smoothed.txt','rt') as f:
 	for line in f:
+		if line[0] == "%":
+			continue
 		value=line.split()
-		t_ie.append(float(value[0]));
-		X_ie.append(float(value[1]));
-		Y_ie.append(float(value[2]));
-		Z_ie.append(float(value[3]));
-		Vx_ie.append(float(value[4]));
-		Vy_ie.append(float(value[5]));
-		Vz_ie.append(float(value[6]));
-		Yaw_ie.append(float(value[7]));
-		Pitch_ie.append(float(value[8]));
-		Roll_ie.append(float(value[9]));
+		if value[24] == "FLOAT":
+			continue
+		t_ie.append(float(value[1]));
+		X_ie.append(float(value[2]));
+		Y_ie.append(float(value[3]));
+		Z_ie.append(float(value[4]));
+		Vx_ie.append(float(value[12]));
+		Vy_ie.append(float(value[13]));
+		Vz_ie.append(float(value[14]));
+		Yaw_ie.append(float(value[21]));
+		Pitch_ie.append(float(value[22]));
+		Roll_ie.append(float(value[23]));
 
 
-with open('FSAS20150722/TCI/tci.ins','rt') as f:
+with open(path+'/tci.ins','rt') as f:
 	for line in f:
+		if count==0 or count==1:
+			count=count+1
+			continue
 		value=line.split()
+		# if value[16] == "2":
+		# 	continue
 		t_m.append(float(value[0]));
 		X_m.append(float(value[1]));
 		Y_m.append(float(value[2]));
@@ -68,9 +80,7 @@ for i in range(len(t_m)):
 	a=Yaw_m[i]-Yaw_ie[index]
 	if abs(Yaw_m[i]-Yaw_ie[index])>20:
 		a=0
-	if t_m[i]>27200:
-		Yaw_err.append(a)
-	# print i,X_err[i],Y_err[i],Z_err[i],VX_err[i],VY_err[i],VZ_err[i]
+	Yaw_err.append(a)
 
 for i in range(len(t)):
 	X_sum=X_sum+abs(X_err[i]);
@@ -81,10 +91,14 @@ for i in range(len(t)):
 	VZ_sum=VZ_sum+abs(VZ_err[i]);
 	Pitch_sum=Pitch_sum+abs(Pitch_err[i]);
 	Roll_sum=Roll_sum+abs(Roll_err[i]);
+	RMS=RMS+abs(SUMXYZ[i])
+
+RMS=RMS/len(t);
+
+
 
 for i in range(len(Yaw_err)):
 	Yaw_sum=Yaw_sum+abs(Yaw_err[i]);
-
 
 X_sum=X_sum/len(t);
 Y_sum=Y_sum/len(t);
@@ -96,120 +110,59 @@ Pitch_sum=Pitch_sum/len(t);
 Roll_sum=Roll_sum/len(t);
 Yaw_sum=Yaw_sum/len(Yaw_err);
 
+print max(SUMXYZ),min(SUMXYZ),RMS
+
 print X_sum,Y_sum,Z_sum,VX_sum,VY_sum,VZ_sum,Pitch_sum,Roll_sum,Yaw_sum
 
 
-plt.plot(t,SUMXYZ,linewidth=8)
-plt.xlabel('Seconds of Week/(s)',fontsize=20)
-plt.ylabel('Position error/(m)',fontsize=20)
+# plt.plot(t,SUMXYZ,linewidth=8)
+# plt.xlabel('Seconds of Week/(s)',fontsize=20)
+# plt.ylabel('Position error/(m)',fontsize=20)
 
-plt.figure()
-plt.plot(t,X_err,linewidth=10);
+plt.figure(figsize=(14, 7))
+plt.scatter(t,X_err,color='red',s=30);
 plt.hold('on')
-plt.plot(t,Y_err,linewidth=10);
-plt.plot(t,Z_err,linewidth=10);
-plt.title('Position error',color='black',fontsize=40)
+plt.scatter(t,Y_err,color='green',s=30);
+plt.scatter(t,Z_err,color='blue',s=30);
+plt.title('TCI Position error',color='black',fontsize=40)
 plt.grid(ls='-')
-# plt.ylim(-10,10)
+# plt.ylim(-0.6,0.6)
 plt.xticks(fontsize=30)
 plt.yticks(fontsize=30)
 plt.xlabel('Seconds of Week/(s)',fontsize=35)
 plt.ylabel('Position error/(m)',fontsize=35)
 plt.legend(['X','Y','Z'],fontsize=30);
+# plt.savefig(path +'/Position error.png',dpi=700,bbox_inches = 'tight')
 
-plt.figure()
-plt.plot(t,VX_err,linewidth=8);
+plt.figure(figsize=(14, 7))
+plt.scatter(t,VX_err,color='red',s=30);
 plt.hold('on')
-plt.plot(t,VY_err,linewidth=8);
-plt.plot(t,VZ_err,linewidth=8);
-plt.title('Velocity error',color='black',fontsize=40)
-# plt.ylim(-0.5,0.5)
+plt.scatter(t,VY_err,color='green',s=30);
+plt.scatter(t,VZ_err,color='blue',s=30);
+plt.title('TCI Velocity error',color='black',fontsize=40)
+# plt.ylim(-0.1,0.1)
 plt.grid(ls='-')
 plt.xticks(fontsize=30)
 plt.yticks(fontsize=30)
 plt.xlabel('Seconds of Week/(s)',fontsize=35)
 plt.ylabel('Velocity error/(m/s)',fontsize=35)
 plt.legend(['Vx','Vy','Vz'],fontsize=30);
+# plt.savefig(path +'/Vecocity error.png',dpi=700,bbox_inches = 'tight')
 
-# plt.figure()
-# plt.plot(range(len(t)),Pitch_err,linewidth=8);
-# plt.title('Attitude error',color='black',fontsize=40)
-# plt.plot(range(len(t)),Roll_err,linewidth=8);
-# plt.plot(range(len(t)),Yaw_err,linewidth=8);
-# plt.grid(ls='-')
-# plt.xticks(fontsize=30)
-# plt.yticks(fontsize=30)
-# plt.xlabel('Seconds of Week/(s)',fontsize=35)
-# plt.ylabel('Attitude error/(deg)',fontsize=35)
-# plt.legend(['Pitch','Roll','Yaw'],fontsize=30);
 
-plt.figure()
-plt.plot(t,Pitch_err,color='red',linewidth=8);
-plt.title('Attitude error',color='black',fontsize=40)
-plt.plot(t,Roll_err,color='green',linewidth=8);
-plt.plot(t,Yaw_err,color='blue',linewidth=8);
+plt.figure(figsize=(14, 7))
+plt.scatter(t,Pitch_err,color='red',s=8);
+plt.title('TCI Attitude error',color='black',fontsize=40)
+plt.scatter(t,Roll_err,color='green',s=8);
+plt.scatter(t,Yaw_err,color='blue',s=8);
 plt.xticks(fontsize=30)
 plt.yticks(fontsize=30)
 plt.grid(ls='-')
-# plt.ylim(-1,1)
+plt.ylim(-5,5)
 plt.xlabel('Seconds of Week/(s)',fontsize=35)
 plt.ylabel('Attitude error/(deg)',fontsize=35)
 plt.legend(['Pitch','Roll','Yaw'],fontsize=30);
-
-# plt.figure()
-# plt.subplot(3,1,1)
-# plt.title('Position',color='black',fontsize=20)
-# plt.plot(t_ie,X_ie,color='red',linewidth=3);
-# plt.hold('on')
-# plt.plot(t_m,X_m,color='green',linewidth=3);
-# plt.xticks(fontsize=20)
-# plt.yticks(fontsize=20)
-# plt.legend(['IE','Mine'],fontsize=20);
-
-# plt.subplot(3,1,2)
-# plt.plot(t_ie,Y_ie,color='red',linewidth=3);
-# plt.hold('on')
-# plt.plot(t_m,Y_m,color='green',linewidth=3);
-# plt.xticks(fontsize=20)
-# plt.yticks(fontsize=20)
-# plt.legend(['IE','Mine'],fontsize=20);
-
-# plt.subplot(3,1,3)
-# plt.plot(t_ie,Z_ie,color='red',linewidth=3);
-# plt.hold('on')
-# plt.plot(t_m,Z_m,color='green',linewidth=3);
-# plt.xticks(fontsize=20)
-# plt.yticks(fontsize=20)
-# plt.xlabel('Seconds of Week/(s)',fontsize=20)
-# plt.legend(['IE','Mine'],fontsize=20);
-
-
-# plt.figure()
-# plt.subplot(3,1,1)
-# plt.title('Velocity',color='black',fontsize=20)
-# plt.plot(t_ie,Vx_ie,color='red',linewidth=3);
-# plt.hold('on')
-# plt.plot(t_m,Vx_m,color='green',linewidth=3);
-# plt.xticks(fontsize=20)
-# plt.yticks(fontsize=20)
-# plt.legend(['IE','Mine'],fontsize=20);
-
-# plt.subplot(3,1,2)
-# plt.plot(t_ie,Vy_ie,color='red',linewidth=3);
-# plt.hold('on')
-# plt.plot(t_m,Vy_m,color='green',linewidth=3);
-# plt.xticks(fontsize=20)
-# plt.yticks(fontsize=20)
-# plt.legend(['IE','Mine'],fontsize=20);
-
-# plt.subplot(3,1,3)
-# plt.plot(t_ie,Vz_ie,color='red',linewidth=3);
-# plt.hold('on')
-# plt.plot(t_m,Vz_m,color='green',linewidth=3);
-# plt.xticks(fontsize=20)
-# plt.yticks(fontsize=20)
-# plt.xlabel('Seconds of Week/(s)')
-# plt.legend(['IE','Mine'],fontsize=20);
+# plt.savefig(path +'/Attitude error.png',dpi=700,bbox_inches = 'tight')
 
 
 # plt.figure()
