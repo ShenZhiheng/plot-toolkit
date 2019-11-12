@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# author: zhShen
+# date: 20190520
 import Cen
 import glv
 import trans

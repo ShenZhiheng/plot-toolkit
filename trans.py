@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# author: zhShen
+# date: 20190520
 import glv
 from math import *
 from numpy import *

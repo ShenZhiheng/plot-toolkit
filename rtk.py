@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# author: zhShen
+# date: 20190620
 import numpy as np
 import matplotlib.pyplot as plt
 import Bound as bd
@@ -38,10 +40,10 @@ for sys in ['G','R','E','C']:
 		ele[prn]=[]
 
 
-path = 'FSAS20190917/1'
+path = 'SEPT20190716'
 attribute='great'
 
-with open(path+'/GNSS-combined.txt','rt') as f:
+with open(path+'/GNSS_combined.txt','rt') as f:
 	for line in f:
 		if line[0] == "%":
 			continue
@@ -56,7 +58,7 @@ with open(path+'/GNSS-combined.txt','rt') as f:
 		Vy_ie.append(float(value[13]));
 		Vz_ie.append(float(value[14]));
 
-with open(path+'/xyzfileifublx.pos','rt') as f:
+with open(path+'/xyzfileif.pos','rt') as f:
 	for line in f:
 		value=line.split()
 		if value[0] == "%":
@@ -65,7 +67,7 @@ with open(path+'/xyzfileifublx.pos','rt') as f:
 		if value[5] == "FLOAT":
 			floated=floated+1
 			state.append(2)
-			# continue
+			continue
 		else:
 			fixed=fixed+1
 			state.append(1)
@@ -103,7 +105,7 @@ with open(path+'/out.txt','rt') as f:
 
 for i in range(len(t_m)):
 	index=bd.lower_bound(t_ie,t_m[i]);
-	index=index-1
+	# index=index-1
 	# print t_m[i],t_ie[index]
 	if abs(t_m[i]-t_ie[index])>1e-1:
 		continue;	
@@ -180,7 +182,7 @@ plt.grid(ls='-')
 # plt.savefig(path + '/' +'ratiopdop.png',dpi=700,bbox_inches = 'tight')
 
 
-fig,ax1=plt.subplots(figsize=(14, 7))
+fig,ax1=plt.subplots(figsize=(18, 9))
 plt.grid(ls='-')
 # ax2=ax1.twinx()
 # ax2.scatter(t_m,state,s=5,label='amb state')
@@ -200,9 +202,11 @@ for sys in ['G','R','E','C']:
 		 	ttt.append(float(sss[0]))
 		 	eledeg.append(float(sss[1]))
 		ax1.plot(ttt,eledeg,linewidth=5,label=prn)
+		ax1.set_xlabel('Second of Week/s',fontsize=35)
+		plt.xlim([185200,187200])
 		plt.legend()
 		sss,ttt,eledeg=[],[],[]
-# plt.savefig(path + '/' +'Elevation.png',dpi=700,bbox_inches = 'tight')
+plt.savefig(path + '/' +'Elevation.png',dpi=700,bbox_inches = 'tight')
 
 
 # plt.figure(figsize=(14, 7))

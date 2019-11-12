@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# author: zhShen
+# date: 20190420
 import numpy as np
 import matplotlib.pyplot as plt
 import Bound as bd
@@ -23,8 +25,8 @@ with open(path+'/TC-combined-smoothed.txt','rt') as f:
 		if line[0] == "%":
 			continue
 		value=line.split()
-		if value[24] == "FLOAT":
-			continue
+		# if value[24] == "FLOAT":
+		# 	continue
 		t_ie.append(float(value[1]));
 		X_ie.append(float(value[2]));
 		Y_ie.append(float(value[3]));
@@ -37,10 +39,9 @@ with open(path+'/TC-combined-smoothed.txt','rt') as f:
 		Roll_ie.append(float(value[23]));
 
 
-with open(path+'/tci.ins','rt') as f:
+with open(path+'/rtci.ins','rt') as f:
 	for line in f:
-		if count==0 or count==1:
-			count=count+1
+		if line[0] == "%":
 			continue
 		value=line.split()
 		# if value[16] == "2":
@@ -120,11 +121,11 @@ print X_sum,Y_sum,Z_sum,VX_sum,VY_sum,VZ_sum,Pitch_sum,Roll_sum,Yaw_sum
 # plt.ylabel('Position error/(m)',fontsize=20)
 
 plt.figure(figsize=(14, 7))
-plt.scatter(t,X_err,color='red',s=30);
+plt.plot(t,X_err,color='red',linewidth=5);
 plt.hold('on')
-plt.scatter(t,Y_err,color='green',s=30);
-plt.scatter(t,Z_err,color='blue',s=30);
-plt.title('TCI Position error',color='black',fontsize=40)
+plt.plot(t,Y_err,color='green',linewidth=5);
+plt.plot(t,Z_err,color='blue',linewidth=5);
+plt.title('Position error',color='black',fontsize=40)
 plt.grid(ls='-')
 # plt.ylim(-0.6,0.6)
 plt.xticks(fontsize=30)
@@ -147,7 +148,7 @@ plt.yticks(fontsize=30)
 plt.xlabel('Seconds of Week/(s)',fontsize=35)
 plt.ylabel('Velocity error/(m/s)',fontsize=35)
 plt.legend(['Vx','Vy','Vz'],fontsize=30);
-# plt.savefig(path +'/Vecocity error.png',dpi=700,bbox_inches = 'tight')
+# # plt.savefig(path +'/Vecocity error.png',dpi=700,bbox_inches = 'tight')
 
 
 plt.figure(figsize=(14, 7))

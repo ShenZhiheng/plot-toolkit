@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# author: zhShen
+# date: 20190520
 import Cen
 import glv
 import trans
@@ -8,7 +10,7 @@ import matplotlib.pyplot as plt
 t,Pax,Pay,Paz,Pve,Pvn,Pvu,Pb,Pl,Ph,Pebx,Peby,Pebz,Pdbx,Pdby,Pdbz=\
 [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
 
-with open('FSAS20190113/tci_kfp.txt','rt') as f:
+with open('HOLO20190625/kfpk.txt','rt') as f:
 	for line in f:
 		value=line.split();
 		t.append(value[0]);

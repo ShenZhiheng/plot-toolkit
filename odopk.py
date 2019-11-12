@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# author: zhShen
+# date: 20190520
 import Cen
 import glv
 import trans
@@ -16,7 +18,7 @@ count=0
 t,Pax,Pay,Paz,Pve,Pvn,Pvu,Pb,Pl,Ph,Pebx,Peby,Pebz,Pdbx,Pdby,Pdbz=\
 [],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]
 
-with open('HOLO20190625/kfpk.txt','rt') as f:
+with open('HOLO20190625/ublx-kfpk.txt','rt') as f:
 	for line in f:
 		value=line.split();
 		t.append(value[0]);
@@ -31,7 +33,7 @@ with open('HOLO20190625/kfpk.txt','rt') as f:
 		Ph.append(math.sqrt(float(value[9])))
 	
 
-with open('HOLO20190625/lci.ins','rt') as f:
+with open('HOLO20190625/ublx-lci.ins','rt') as f:
 	for line in f:
 		if count==0 or count==1:
 			count=count+1
@@ -64,7 +66,7 @@ for i in range(len(t)):
 	Paz[i]=float(Paz[i]/glv.deg)
 
 
-with open('HOLO20190625/odo.ins','wt') as f:
+with open('HOLO20190625/ublx-odo.ins','wt') as f:
 	s='gps_week,gps_sec,latitude,longitude,altitude,roll,pitch,yaw,Ve,Vn,Vu,x_std,y_std,z_std,roll_std,pitch_std,yaw_std,Ve_std,Vn_std,Vu_std'
 	f.writelines(s+'\n')
 	for i in range(len(t)):

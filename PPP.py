@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# author: zhShen
+# date: 20190520
 import numpy as np
 import matplotlib.pyplot as plt
 import Bound as bd
@@ -12,21 +14,24 @@ Vx_ie,Vy_ie,Vz_ie,Vx_m,Vy_m,Vz_m=[],[],[],[],[],[]
 Sig_x,Sig_y,Sig_z,Sig_Vx,Sig_Vy,Sig_Vz=[],[],[],[],[],[]
 t,X_err,Y_err,Z_err,VX_err,VY_err,VZ_err=[],[],[],[],[],[],[]
 X_sum,Y_sum,Z_sum,VX_sum,VY_sum,VZ_sum=0.0,0.0,0.0,0.0,0.0,0.0
+path = 'FSAS20190917/4'
 
-with open('FSAS20190113/WLC20190113.trj','rt') as f:
+with open(path+'/GNSS-combined.txt','rt') as f:
 	for line in f:
+		if line[0] == "%":
+			continue
 		value=line.split()
-		t_ie.append(float(value[0]));
-		[x,y,z]=[float(value[1]),float(value[2]),float(value[3])]
-		# [x,y,z]=trans.blh2xyz(float(value[18])*glv.deg,float(value[19])*glv.deg,float(value[20]))
-		X_ie.append(x);
-		Y_ie.append(y);
-		Z_ie.append(z);
-		Vx_ie.append(float(value[4]));
-		Vy_ie.append(float(value[5]));
-		Vz_ie.append(float(value[6]));
+		if value[24] == "FLOAT":
+			continue
+		t_ie.append(float(value[1]));
+		X_ie.append(float(value[2]));
+		Y_ie.append(float(value[3]));
+		Z_ie.append(float(value[4]));
+		Vx_ie.append(float(value[12]));
+		Vy_ie.append(float(value[13]));
+		Vz_ie.append(float(value[14]));
 
-with open('FSAS20190113/FSAS-GR-1.flt','rt') as f:
+with open(path+'/NPP6-GREC.flt','rt') as f:
 	for line in f:
 		value=line.split()
 		t_m.append(float(value[0]));
@@ -39,8 +44,6 @@ with open('FSAS20190113/FSAS-GR-1.flt','rt') as f:
 
 for i in range(len(t_m)):
 	index=bd.lower_bound(t_ie,t_m[i]);
-	if index==len(t_ie)-1:
-		break;
 	if abs(t_m[i]-t_ie[index])>1e-8:
 		continue;
 	t.append(t_m[i]);
@@ -68,11 +71,11 @@ VZ_sum=VZ_sum/len(t);
 
 print X_sum,Y_sum,Z_sum,VX_sum,VY_sum,VZ_sum
 
-
-plt.plot(t,X_err,linewidth=10,color='red');
+plt.figure(figsize=(14, 7))
+plt.scatter(t,X_err,s=20,color='red');
 plt.hold('on')
-plt.plot(t,Y_err,linewidth=10,color='green');
-plt.plot(t,Z_err,linewidth=10,color='blue');
+plt.scatter(t,Y_err,s=20,color='green');
+plt.scatter(t,Z_err,s=20,color='blue');
 plt.title('Position error',color='black',fontsize=40)
 plt.grid(ls='-')
 plt.xticks(fontsize=30)
@@ -80,64 +83,34 @@ plt.yticks(fontsize=30)
 plt.xlabel('Seconds of Week/(s)',fontsize=35)
 plt.ylabel('Position error/(m)',fontsize=35)
 plt.legend(['X','Y','Z'],fontsize=30);
+# plt.savefig(path +'/Position error.png',dpi=700,bbox_inches = 'tight')
+# plt.figure()
+# plt.scatter(t,VX_err,color='red',s=30);
+# plt.hold('on')
+# plt.scatter(t,VY_err,color='green',s=30);
+# plt.scatter(t,VZ_err,color='blue',s=30);
+# plt.title('Velocity error',color='black',fontsize=40)
+# plt.grid(ls='-')
+# plt.xticks(fontsize=30)
+# plt.yticks(fontsize=30)
+# # plt.ylim(-2,2)
+# plt.xlabel('Seconds of Week/(s)',fontsize=35)
+# plt.ylabel('Velocity error/(m/s)',fontsize=35)
+# plt.legend(['Vx','Vy','Vz'],fontsize=30);
 
-plt.figure()
-plt.plot(t,VX_err,linewidth=10);
-plt.hold('on')
-plt.plot(t,VY_err,linewidth=10);
-plt.plot(t,VZ_err,linewidth=10);
-plt.title('Velocity error',color='black',fontsize=40)
-plt.grid(ls='-')
-plt.xticks(fontsize=30)
-plt.yticks(fontsize=30)
-plt.ylim(-2,2)
-plt.xlabel('Seconds of Week/(s)',fontsize=35)
-plt.ylabel('Velocity error/(m/s)',fontsize=35)
-plt.legend(['Vx','Vy','Vz'],fontsize=30);
-
-
-plt.figure()
-plt.plot(t_m,Vx_m,linewidth=8,color='red');
-plt.hold('on')
-plt.plot(t_m,Vy_m,linewidth=8,color='green');
-plt.plot(t_m,Vz_m,linewidth=8,color='blue');
-plt.title('Velocity',color='black',fontsize=40)
-plt.grid(ls='-')
-plt.xticks(fontsize=30)
-plt.yticks(fontsize=30)
-plt.xlabel('Seconds of Week/(s)',fontsize=35)
-plt.ylabel('Velocity/(m/s)',fontsize=35)
-plt.legend(['Vx','Vy','Vz'],fontsize=30);
 
 # plt.figure()
-# plt.subplot(3,1,1)
-# plt.title('Velocity',fontsize=20)
-# plt.plot(t_ie,Vx_ie,color='red',linewidth=3);
+# plt.plot(t_m,Vx_m,linewidth=8,color='red');
 # plt.hold('on')
-# plt.plot(t_m,Vx_m,color='green',linewidth=3);
-# plt.xticks(fontsize=20)
-# plt.yticks(fontsize=20)
-# plt.legend(['IE','Mine'],fontsize=20);
-
-# plt.subplot(3,1,2)
-# plt.plot(t_ie,Vy_ie,color='red',linewidth=3);
-# plt.hold('on')
-# plt.plot(t_m,Vy_m,color='green',linewidth=3);
-# plt.xticks(fontsize=20)
-# plt.yticks(fontsize=20)
-# plt.legend(['IE','Mine'],fontsize=20);
-
-# plt.subplot(3,1,3)
-# plt.plot(t_ie,Vz_ie,color='red',linewidth=3);
-# plt.hold('on')
-# plt.plot(t_m,Vz_m,color='green',linewidth=3);
-# plt.xticks(fontsize=20)
-# plt.yticks(fontsize=20)
-# plt.xlabel('Seconds of Week/(s)')
-# plt.legend(['IE','Mine'],fontsize=20);
-
-
-
+# plt.plot(t_m,Vy_m,linewidth=8,color='green');
+# plt.plot(t_m,Vz_m,linewidth=8,color='blue');
+# plt.title('Velocity',color='black',fontsize=40)
+# plt.grid(ls='-')
+# plt.xticks(fontsize=30)
+# plt.yticks(fontsize=30)
+# plt.xlabel('Seconds of Week/(s)',fontsize=35)
+# plt.ylabel('Velocity/(m/s)',fontsize=35)
+# plt.legend(['Vx','Vy','Vz'],fontsize=30);
 
 plt.show();
 

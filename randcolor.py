@@ -1,5 +1,6 @@
 #!/usr/bin/python
-
+# author: zhShen
+# date: 20190920
 import random
 
 def randomcolor():
