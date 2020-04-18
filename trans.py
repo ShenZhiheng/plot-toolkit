@@ -49,3 +49,53 @@ def xyz2blh(X,Y,Z):
     return array([B,L,H])
 
 
+def xyz2enu(XYZ=[],XYZ_Ref=[]):
+
+    [b,l,h]=xyz2blh(XYZ[0],XYZ[1],XYZ[2])
+
+    r=[XYZ[0]-XYZ_Ref[0], XYZ[1]-XYZ_Ref[1], XYZ[2]-XYZ_Ref[2]]
+
+
+    sinPhi = sin(b);
+    cosPhi = cos(b);
+    sinLam = sin(l);
+    cosLam = cos(l);
+
+    E = -sinPhi * cosLam * r[0] - sinPhi * sinLam * r[1] + cosPhi * r[2];
+    N = -sinLam * r[0] + cosLam * r[1];
+    U = +cosPhi * cosLam * r[0] + cosPhi * sinLam * r[1] + sinPhi * r[2];
+
+    return array([E,N,U])
+
+
+
+# int xyz2neu(const double* XYZ, const double* XYZ_Ref, double* neu)
+#     {
+#         double ele[3];
+#         xyz2ell(XYZ_Ref, ele, false);
+
+#         ColumnVector r(3);
+
+#         r << XYZ[0] - XYZ_Ref[0] << XYZ[1] - XYZ_Ref[1] << XYZ[2] - XYZ_Ref[2];
+
+#         double sinPhi = sin(ele[0]);
+#         double cosPhi = cos(ele[0]);
+#         double sinLam = sin(ele[1]);
+#         double cosLam = cos(ele[1]);
+
+
+
+#         neu[0] = -sinPhi * cosLam * r(1)
+#             - sinPhi * sinLam * r(2)
+#             + cosPhi * r(3);
+
+#         neu[1] = -sinLam * r(1)
+#             + cosLam * r(2);
+
+#         neu[2] = +cosPhi * cosLam * r(1)
+#             + cosPhi * sinLam * r(2)
+#             + sinPhi * r(3);
+
+#         return 1;
+#     }
+
