@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/bin/python3
 # author: zhShen
 # date: 20190420
 import numpy as np
@@ -18,28 +18,28 @@ t,X_err,Y_err,Z_err,VX_err,VY_err,VZ_err,SUMXYZ=[],[],[],[],[],[],[],[]
 Pitch_err,Roll_err,Yaw_err=[],[],[]
 X_sum,Y_sum,Z_sum,VX_sum,VY_sum,VZ_sum,Pitch_sum,Roll_sum,Yaw_sum=0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
 
-path = 'FSAS20190917/3'
+path = 'FSAS20190614'
 
-with open(path+'/TC-combined-smoothed.txt','rt') as f:
+with open(path+'/TC_smooth_combined.txt','rt') as f:
 	for line in f:
 		if line[0] == "%":
 			continue
 		value=line.split()
-		# if value[24] == "FLOAT":
-		# 	continue
+		if value[24] == "FLOAT":
+			continue
 		t_ie.append(float(value[1]));
-		X_ie.append(float(value[2]));
-		Y_ie.append(float(value[3]));
-		Z_ie.append(float(value[4]));
+		X_ie.append(float(value[2])-(-2280124.80746)+(-2280126.217));
+		Y_ie.append(float(value[3])-(5007874.71896)+(5007876.931));
+		Z_ie.append(float(value[4])-(3214600.77599)+(3214601.416));
 		Vx_ie.append(float(value[12]));
 		Vy_ie.append(float(value[13]));
 		Vz_ie.append(float(value[14]));
 		Yaw_ie.append(float(value[21]));
 		Pitch_ie.append(float(value[22]));
 		Roll_ie.append(float(value[23]));
-
-
-with open(path+'/rtci.ins','rt') as f:
+# -2280126.217     5007876.931     3214601.416
+# -2280124.80746 5007874.71896 3214600.77599
+with open(path+'/tci.ins','rt') as f:
 	for line in f:
 		if line[0] == "%":
 			continue
@@ -111,116 +111,102 @@ Pitch_sum=Pitch_sum/len(t);
 Roll_sum=Roll_sum/len(t);
 Yaw_sum=Yaw_sum/len(Yaw_err);
 
-print max(SUMXYZ),min(SUMXYZ),RMS
+print(max(SUMXYZ),min(SUMXYZ),RMS)
 
-print X_sum,Y_sum,Z_sum,VX_sum,VY_sum,VZ_sum,Pitch_sum,Roll_sum,Yaw_sum
+print(X_sum,Y_sum,Z_sum,VX_sum,VY_sum,VZ_sum,Pitch_sum,Roll_sum,Yaw_sum)
 
 
-# plt.plot(t,SUMXYZ,linewidth=8)
-# plt.xlabel('Seconds of Week/(s)',fontsize=20)
-# plt.ylabel('Position error/(m)',fontsize=20)
-
-plt.figure(figsize=(14, 7))
+plt.figure(figsize=(14, 7),dpi=100)
 plt.plot(t,X_err,color='red',linewidth=5);
-plt.hold('on')
 plt.plot(t,Y_err,color='green',linewidth=5);
 plt.plot(t,Z_err,color='blue',linewidth=5);
-plt.title('Position error',color='black',fontsize=40)
+plt.title('Position error',color='black',fontsize=25)
 plt.grid(ls='-')
 # plt.ylim(-0.6,0.6)
-plt.xticks(fontsize=30)
-plt.yticks(fontsize=30)
-plt.xlabel('Seconds of Week/(s)',fontsize=35)
-plt.ylabel('Position error/(m)',fontsize=35)
-plt.legend(['X','Y','Z'],fontsize=30);
-# plt.savefig(path +'/Position error.png',dpi=700,bbox_inches = 'tight')
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.xlabel('Seconds of Week/(s)',fontsize=20)
+plt.ylabel('Position error/(m)',fontsize=20)
+plt.legend(['X','Y','Z'],fontsize=30,loc=1);
+# plt.savefig(path +'/Position error.png',bbox_inches = 'tight')
 
-plt.figure(figsize=(14, 7))
-plt.scatter(t,VX_err,color='red',s=30);
-plt.hold('on')
-plt.scatter(t,VY_err,color='green',s=30);
-plt.scatter(t,VZ_err,color='blue',s=30);
-plt.title('TCI Velocity error',color='black',fontsize=40)
+plt.figure(figsize=(14, 7),dpi=100)
+plt.scatter(t,VX_err,color='red',s=20);
+plt.scatter(t,VY_err,color='green',s=20);
+plt.scatter(t,VZ_err,color='blue',s=20);
+plt.title('TCI Velocity error',color='black',fontsize=20)
 # plt.ylim(-0.1,0.1)
 plt.grid(ls='-')
-plt.xticks(fontsize=30)
-plt.yticks(fontsize=30)
-plt.xlabel('Seconds of Week/(s)',fontsize=35)
-plt.ylabel('Velocity error/(m/s)',fontsize=35)
-plt.legend(['Vx','Vy','Vz'],fontsize=30);
-# # plt.savefig(path +'/Vecocity error.png',dpi=700,bbox_inches = 'tight')
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.xlabel('Seconds of Week/(s)',fontsize=20)
+plt.ylabel('Velocity error/(m/s)',fontsize=20)
+plt.legend(['Vx','Vy','Vz'],fontsize=30,loc=1);
+# # plt.savefig(path +'/Vecocity error.png',bbox_inches = 'tight')
 
 
-plt.figure(figsize=(14, 7))
+plt.figure(figsize=(14, 7),dpi=100)
 plt.scatter(t,Pitch_err,color='red',s=8);
-plt.title('TCI Attitude error',color='black',fontsize=40)
+plt.title('TCI Attitude error',color='black',fontsize=25)
 plt.scatter(t,Roll_err,color='green',s=8);
 plt.scatter(t,Yaw_err,color='blue',s=8);
-plt.xticks(fontsize=30)
-plt.yticks(fontsize=30)
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.xlabel('Seconds of Week/(s)',fontsize=20)
 plt.grid(ls='-')
 plt.ylim(-5,5)
-plt.xlabel('Seconds of Week/(s)',fontsize=35)
-plt.ylabel('Attitude error/(deg)',fontsize=35)
-plt.legend(['Pitch','Roll','Yaw'],fontsize=30);
-# plt.savefig(path +'/Attitude error.png',dpi=700,bbox_inches = 'tight')
+plt.ylabel('Attitude error/(deg)',fontsize=20)
+plt.legend(['Pitch','Roll','Yaw'],fontsize=30,loc=1);
+# plt.savefig(path +'/Attitude error.png',bbox_inches = 'tight')
 
 
 # plt.figure()
 # plt.subplot(3,1,1)
 # plt.title('Attitude',color='black',fontsize=20)
 # plt.plot(t_ie,Pitch_ie,color='red',linewidth=3);
-# plt.hold('on')
 # plt.plot(t_m,Pitch_m,color='green',linewidth=3);
 # plt.xticks(fontsize=20)
 # plt.yticks(fontsize=20)
-# plt.legend(['IE','Mine'],fontsize=20);
+# plt.legend(['IE','Mine'],fontsize=20,loc=1);
 
 # plt.subplot(3,1,2)
 # plt.plot(t_ie,Roll_ie,color='red',linewidth=3);
-# plt.hold('on')
 # plt.plot(t_m,Roll_m,color='green',linewidth=3);
 # plt.xticks(fontsize=20)
 # plt.yticks(fontsize=20)
-# plt.legend(['IE','Mine'],fontsize=20);
+# plt.legend(['IE','Mine'],fontsize=20),loc=1;
 
 # plt.subplot(3,1,3)
 # plt.plot(t_ie,Yaw_ie,color='red',linewidth=3);
-# plt.hold('on')
 # plt.plot(t_m,Yaw_m,color='green',linewidth=3);
 # plt.xticks(fontsize=20)
 # plt.yticks(fontsize=20)
 # plt.xlabel('Seconds of Week/(s)')
-# plt.legend(['IE','Mine'],fontsize=20);
+# plt.legend(['IE','Mine'],fontsize=20,loc=1);
 
-plt.figure()
-plt.plot(t_m,bgx,color='red',linewidth=8);
-plt.hold('on')
-plt.plot(t_m,bgy,color='green',linewidth=8);
-plt.hold('on')
-plt.plot(t_m,bgz,color='blue',linewidth=8);
-plt.title('Gyro Bias',color='black',fontsize=40)
+plt.figure(figsize=(14, 7),dpi=100)
+plt.plot(t_m,bgx,color='red',linewidth=5);
+plt.plot(t_m,bgy,color='green',linewidth=5);
+plt.plot(t_m,bgz,color='blue',linewidth=5);
+plt.title('Gyro Bias',color='black',fontsize=25)
 plt.grid(ls='-')
-plt.xticks(fontsize=30)
-plt.yticks(fontsize=30)
-plt.xlabel('Seconds of Week/(s)',fontsize=35)
-plt.ylabel('bias of gyro/(deg/h)',fontsize=35)
-plt.legend(['x','y','z'],fontsize=30);
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.xlabel('Seconds of Week/(s)',fontsize=20)
+plt.ylabel('bias of gyro/(deg/h)',fontsize=20)
+plt.legend(['x','y','z'],fontsize=30,loc=1);
 
 
-plt.figure()
-plt.plot(t_m,bax,color='red',linewidth=8);
-plt.hold('on')
-plt.plot(t_m,bay,color='green',linewidth=8);
-plt.hold('on')
-plt.plot(t_m,baz,color='blue',linewidth=8);
-plt.title('Accelerate Bias',color='black',fontsize=40)
-plt.grid(ls='-')
-plt.xticks(fontsize=30)
-plt.yticks(fontsize=30)
-plt.xlabel('Seconds of Week/(s)',fontsize=35)
-plt.ylabel('bias of acce/(mg)',fontsize=35)
-plt.legend(['x','y','z'],fontsize=30);
+plt.figure(figsize=(14, 7),dpi=100)
+plt.plot(t_m,bax,color='red',linewidth=5);
+plt.plot(t_m,bay,color='green',linewidth=5);
+plt.plot(t_m,baz,color='blue',linewidth=5);
+plt.title('Accelerate Bias',color='black',fontsize=25)
+plt.xticks(fontsize=20)
+plt.yticks(fontsize=20)
+plt.xlabel('Seconds of Week/(s)',fontsize=20)
+plt.ylabel('bias of acce/(mg)',fontsize=20)
+plt.legend(['x','y','z'],fontsize=30,loc=1);
 
 
 plt.show();
