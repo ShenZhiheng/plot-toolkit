@@ -67,35 +67,3 @@ def xyz2enu(XYZ=[],XYZ_Ref=[]):
 
     return array([E,N,U])
 
-
-
-# int xyz2neu(const double* XYZ, const double* XYZ_Ref, double* neu)
-#     {
-#         double ele[3];
-#         xyz2ell(XYZ_Ref, ele, false);
-
-#         ColumnVector r(3);
-
-#         r << XYZ[0] - XYZ_Ref[0] << XYZ[1] - XYZ_Ref[1] << XYZ[2] - XYZ_Ref[2];
-
-#         double sinPhi = sin(ele[0]);
-#         double cosPhi = cos(ele[0]);
-#         double sinLam = sin(ele[1]);
-#         double cosLam = cos(ele[1]);
-
-
-
-#         neu[0] = -sinPhi * cosLam * r(1)
-#             - sinPhi * sinLam * r(2)
-#             + cosPhi * r(3);
-
-#         neu[1] = -sinLam * r(1)
-#             + cosLam * r(2);
-
-#         neu[2] = +cosPhi * cosLam * r(1)
-#             + cosPhi * sinLam * r(2)
-#             + sinPhi * r(3);
-
-#         return 1;
-#     }
-
