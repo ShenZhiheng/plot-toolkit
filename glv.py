@@ -4,6 +4,17 @@
 #coding:utf8
 from numpy import *
 
+div_ref = {'GNSS_INS20190613':[-2267821.37349,5009333.67843,3220980.19527],
+'GNSS_INS20190614':[-2280124.80746,5007874.71896,3214600.77599],
+'GNSS_INS20150722':[-2262959.73266,5018893.3985,3209551.26355],
+'GNSS_INS20190716':[-2280111.74061,5007885.88124,3214597.99589]}
+
+plus_ref = {'GNSS_INS20190613':[-2267825.4414,5009338.2921,3220976.3247],
+'GNSS_INS20190614':[-2280126.217,5007876.931,3214601.416],
+'GNSS_INS20150722':[-2262959.8563,5018893.5896,3209551.4511],
+'GNSS_INS20190716':[ -2280111.5451,5007885.8405,3214598.6301]}
+
+
 a = 6378137;   # the Earth's semi-major axis
 f  = 1/298.257;# flattening
 wie = 7.2921151467e-5; 
@@ -13,13 +24,11 @@ e2 =  e**2; # 1st eccentricity
 ep = sqrt( a**2- b**2)/ b; 
 ep2 =  ep**2; # 2nd eccentricity
 wie = wie;  # the Earth's angular rate
-meru =  wie/1000;# milli earth rate unit
 g0 = 9.7803267714;  # gravitational force
 mg = 1.0e-3* g0; # milli g
 ug = 1.0e-6* g0; # micro g
 mGal = 1.0e-3*0.01; # milli Gal = 1cm/s**2 ~= 1.0E-6*g0
 ugpg2 =  ug/ g0**2;# ug/g**2
-ws = 1/sqrt( a/ g0); # Schuler frequency
 ppm = 1.0e-6;   # parts per million
 deg = pi/180;   # arcdeg
 min =  deg/60;   # arcmin
@@ -37,7 +46,4 @@ ugpsh =  ug/sqrt( hur); # ug / sqrt(hour)
 mpsh = 1/sqrt( hur); # m / sqrt(hour)
 mpspsh = 1/1/sqrt( hur); # (m/s) / sqrt(hour), 1*mpspsh~=1700*ugpsHz
 ppmpsh =  ppm/sqrt( hur); # ppm / sqrt(hour)
-mil = 2*pi/6000;# mil
-nm = 1853;  # nautical mile
-kn =  nm/ hur;# knot
-   
+
