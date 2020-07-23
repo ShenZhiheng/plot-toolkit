@@ -138,7 +138,7 @@ def plot_att(name,time=[],diff=[]):
 	# ax.set_xticks(np.arange(0,hour[size-1]+0.2, 0.2))
 	# ax.set_yticks(np.arange(-0.5,0.51,0.1))
 	ax.set_xlim(-0.1,hour[size-1]+0.1)
-	ax.set_ylim(-0.5,0.5)
+	# ax.set_ylim(-0.5,0.5)
 	# ax.set_ylim(-1,1)
 	# ax.set_ylim(-3,3)
 	ax.tick_params(axis='both',colors='black',direction='out',labelsize=15,width=1,length=1,pad=5)
@@ -150,7 +150,7 @@ def plot_att(name,time=[],diff=[]):
 		framealpha=0.5,facecolor='none',ncol=3,numpoints=5, markerscale=2, handlelength=1)
 
 	ax.text(0.01,1.04,s,bbox=dict(facecolor='none', alpha=0.1,pad=6),fontdict=font2,transform = ax.transAxes)
-	plt.savefig(name+'.png',bbox_inches = 'tight',dpi=300,transparent='true')
+	# plt.savefig(name+'.png',bbox_inches = 'tight',dpi=300,transparent='true')
 
 
 def plot_bias(name,time=[],bias=[]):
@@ -256,7 +256,7 @@ def plot_sat_pdop(name,time=[],status=[]):
 	ax.grid(linestyle='--',linewidth=0.3, color='blue',axis='both')
 	
 	# Plot NSAT
-	ax.scatter(hour,nsat,s=15,color='#0804f9',marker='s',zorder=50)
+	ax.scatter(hour,nsat,s=15,color='#0804f9',marker='s',zorder=50,label='NSAT')
 	box = ax.get_position()
 	ax.set_position([box.x0, box.y0, box.width , box.height]) 
 	ax.set_xlim(-0.1,hour[size-1]+0.1)
@@ -267,29 +267,40 @@ def plot_sat_pdop(name,time=[],status=[]):
 	ax.tick_params(axis='both',colors='black',direction='out',labelsize=15,width=1,length=1,pad=5)
 
 	ax1 = ax.twinx()
-	ax2 = ax.twinx()
 	ax1.set_ylabel('PDOP',font1)
 
 	# Plot PDOP
-	ax1.scatter(hour,pdop,s=15,color='#cf1b1b',marker='o',zorder=1)
+	ax1.scatter(hour,pdop,s=15,color='#cf1b1b',marker='o',zorder=1,label='PDOP')
 	ax1.tick_params(axis='both',colors='black',direction='out',labelsize=15,width=1,length=1,pad=5)
-	ax1.set_ylim(1,)
+	ax.set_ylim(1,)
 
-	# Plot AMB
-	cmap, norm = mpl.colors.from_levels_and_colors(levels=[0, 1], colors=['red', 'lime'], extend='max')
-	ax2.scatter(hour,[0.99 for i in range(size)],s=50,c=amb,marker='s',cmap=cmap,norm=norm)
+	# # Plot AMB
+	ax2 = ax.twinx()
+	[x,y]=[[hour[i] for i in range(size) if amb[i]==1],[0.99 for i in range(size) if amb[i]==1]]
+	# ax2.scatter(x,y,s=50,color='lime',marker='|')
+	ax2.scatter(x,y,s=100,color='lime',marker='|')
+	ax2.scatter([],[],s=20,color='lime',marker='s',label='Fixed')
 	ax2.set_yticks(np.arange(0,1.1,0.1))
 	ax2.set_yticks([])
+
+	ax3 = ax.twinx()
+	[x,y]=[[hour[i] for i in range(size) if amb[i]==0],[0.99 for i in range(size) if amb[i]==0]]
+	ax3.scatter(x,y,s=100,color='red',marker='|')
+	ax3.scatter([],[],s=20,color='red',marker='s',label='Float')
+	ax3.set_yticks(np.arange(0,1.1,0.1))
+	ax3.set_yticks([])
+
+
+	# ax2 = ax.twinx()
+	# cmap, norm = mpl.colors.from_levels_and_colors(levels=[0, 1], colors=['red', 'lime'], extend='max')
+	# ax2.scatter(hour,[0.99 for i in range(size)],s=50,c=amb,marker='s',cmap=cmap,norm=norm,label='Fixed')
+	# ax2.set_yticks(np.arange(0,1.1,0.1))
+	# ax2.set_yticks([])
+
 	# Legend
 	font2 = {'weight' : 600, 'size' : 15}
-	legend=ax.legend(['NSAT'],bbox_to_anchor=(0.14,1.12),loc='upper right',prop=font2,
-		framealpha=0.5,facecolor='none',numpoints=5, markerscale=2, handlelength=1)
-	legend1=ax1.legend(['PDOP'],bbox_to_anchor=(1.01,1.12),loc='upper right',prop=font2,
-		framealpha=0.5,facecolor='none',numpoints=5, markerscale=2, handlelength=1)
-	# legend2=ax2.legend(['AMB'],bbox_to_anchor=(0.55,1.12),loc='upper right',prop=font2,
-		# framealpha=0.5,facecolor='none',numpoints=5, markerscale=2, handlelength=1)
-	font3 = {'weight' : 600, 'size' : 15, 'color' : 'lime' }
-	ax2.text(0.47,1.03,'AMB',bbox=dict(facecolor='none', alpha=0.1,pad=6),fontdict=font3,transform = ax.transAxes)
-		
+	legend=fig.legend(bbox_to_anchor=(0.5,0.98),loc='upper right',prop=font2,
+		framealpha=0.5,facecolor='none',ncol=5,numpoints=5, markerscale=2, handlelength=1)
+
 	plt.savefig(name+'.png',bbox_inches = 'tight',dpi=300,transparent='true')
 
