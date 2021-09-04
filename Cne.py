@@ -5,13 +5,13 @@
 import numpy as np
 
 def Cne(B,L):
-    res=np.mat(np.zeros((3,3)));
+    res=np.mat(np.zeros((3,3)))
 
-    slat = np.sin(B); 
-    clat = np.cos(B);
-    slon = np.sin(L); 
-    clon = np.cos(L);
+    slat = np.sin(B) 
+    clat = np.cos(B)
+    slon = np.sin(L) 
+    clon = np.cos(L)
     res = np.matrix([[ -slon,clon,0 ],
           [ -slat*clon, -slat*slon, clat],
           [  clat*clon,  clat*slon, slat]])
-    return res;
+    return res
